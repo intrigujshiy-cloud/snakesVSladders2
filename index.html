@@ -55,23 +55,6 @@
         #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
         @keyframes rainbowMove { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
         .cup { font-size: 150px; z-index: 20001; position: relative; }
-        
-        /* Новые стили для блока фишек справа */
-        .tokens-config-block {
-            background: #2a2a2a;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #4CAF50;
-            margin-bottom: 15px;
-        }
-        .token-size-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 5px;
-        }
-        .token-size-control input { flex: 1; }
-        .token-size-control span { font-size: 10px; min-width: 25px; }
     </style>
 </head>
 <body>
@@ -80,43 +63,6 @@
 
 <div id="panel">
     <h3 style="margin:0 0 10px 0; color: #4CAF50;">Конструктор</h3>
-
-    <div class="tokens-config-block">
-        <label style="font-size:12px; font-weight:bold; color: #4CAF50;">ГЕРОИ И РАЗМЕРЫ:</label>
-        <div style="margin-top:10px;">
-            <div class="input-wrap">
-                <input type="text" id="t1" placeholder="Герой 1 (URL)" oninput="update()">
-                <button class="clear-btn" onclick="clearInp('t1')">×</button>
-            </div>
-            <div class="token-size-control">
-                <span>Size:</span><input type="range" id="ts1" min="10" max="200" value="60" oninput="update()">
-            </div>
-            
-            <div class="input-wrap" style="margin-top:10px;">
-                <input type="text" id="t2" placeholder="Герой 2 (URL)" oninput="update()">
-                <button class="clear-btn" onclick="clearInp('t2')">×</button>
-            </div>
-            <div class="token-size-control">
-                <span>Size:</span><input type="range" id="ts2" min="10" max="200" value="60" oninput="update()">
-            </div>
-
-            <div class="input-wrap" style="margin-top:10px;">
-                <input type="text" id="t3" placeholder="Герой 3 (URL)" oninput="update()">
-                <button class="clear-btn" onclick="clearInp('t3')">×</button>
-            </div>
-            <div class="token-size-control">
-                <span>Size:</span><input type="range" id="ts3" min="10" max="200" value="60" oninput="update()">
-            </div>
-
-            <div class="input-wrap" style="margin-top:10px;">
-                <input type="text" id="t4" placeholder="Герой 4 (URL)" oninput="update()">
-                <button class="clear-btn" onclick="clearInp('t4')">×</button>
-            </div>
-            <div class="token-size-control">
-                <span>Size:</span><input type="range" id="ts4" min="10" max="200" value="60" oninput="update()">
-            </div>
-        </div>
-    </div>
     
     <div class="input-wrap"><input type="text" id="bg-url" placeholder="Ссылка на ФОН ИГРЫ" oninput="update()"><button class="clear-btn" onclick="clearInp('bg-url')">×</button></div>
     <div class="input-wrap"><input type="text" id="modal-bg-url" placeholder="Ссылка на ФОН ОКНА (URL)" oninput="update()"><button class="clear-btn" onclick="clearInp('modal-bg-url')">×</button></div>
@@ -163,6 +109,25 @@
         <option value="neon">Неоновый</option>
         <option value="gold">Золотой</option>
     </select>
+
+    <label style="font-size:11px; color:#4CAF50; font-weight:bold;">СКИНЫ ФИШЕК:</label>
+    <div class="colors-grid">
+        <div class="input-wrap"><input type="text" id="t1" placeholder="Фишка 1" oninput="update()"><button class="clear-btn" onclick="clearInp('t1')">×</button></div>
+        <div class="input-wrap"><input type="text" id="t2" placeholder="Фишка 2" oninput="update()"><button class="clear-btn" onclick="clearInp('t2')">×</button></div>
+        <div class="input-wrap"><input type="text" id="t3" placeholder="Фишка 3" oninput="update()"><button class="clear-btn" onclick="clearInp('t3')">×</button></div>
+        <div class="input-wrap"><input type="text" id="t4" placeholder="Фишка 4" oninput="update()"><button class="clear-btn" onclick="clearInp('t4')">×</button></div>
+    </div>
+
+    <div class="half-width-sliders" style="margin-bottom:10px;">
+        <div>
+            <label class="size-label">Ширина фишки: <span id="tw-val">60</span>px</label>
+            <input type="range" id="token-w" min="10" max="200" value="60" oninput="update()">
+        </div>
+        <div>
+            <label class="size-label">Высота фишки: <span id="th-val">60</span>px</label>
+            <input type="range" id="token-h" min="10" max="200" value="60" oninput="update()">
+        </div>
+    </div>
 
     <div class="input-wrap"><input type="text" id="ladder-url" placeholder="URL Лестницы" oninput="update()"><button class="clear-btn" onclick="clearInp('ladder-url')">×</button></div>
     <div class="input-wrap"><input type="text" id="snake-url" placeholder="URL Змеи" oninput="update()"><button class="clear-btn" onclick="clearInp('snake-url')">×</button></div>
@@ -237,10 +202,8 @@
     const bgMusic = new Audio(); bgMusic.loop = true;
 
     let state = { 
-        bg: '', modalBgImg: '', music: '', tokens: ['', '', '', ''], 
-        tokenSizes: [60, 60, 60, 60], // Массив размеров для фишек
-        ladderImg: '', snakeImg: '', points: [], 
-        cellSize: 60, ladderTh: 60, snakeTh: 60, tasks: [], playerCount: 4,
+        bg: '', modalBgImg: '', music: '', tokens: ['', '', '', ''], ladderImg: '', snakeImg: '', points: [], 
+        cellSize: 60, ladderTh: 60, snakeTh: 60, tokenW: 60, tokenH: 60, tasks: [], playerCount: 4,
         colors: { dots: '#ffffff', modalBg: '#fff9e6', modalTxt: '#333333', btnBg: '#4CAF50', trail: '#ffffff' }, 
         neon: true, randQ: true, cellShape: 'circle', font: 'Arial', diceSkin: 'classic',
         trailType: 'match', startPos: {x:100, y:150}, finishPos: {x:100, y:250}, links: []
@@ -251,8 +214,10 @@
     const ladderImgObj = new Image();
     const snakeImgObj = new Image();
     let tPos = [
-        {x:50,y:50,tx:50,ty:50, angle:0, isWin:false}, {x:120,y:50,tx:120,ty:50, angle:0, isWin:false}, 
-        {x:50,y:120,tx:50,ty:120, angle:0, isWin:false}, {x:120,y:120,tx:120,ty:120, angle:0, isWin:false}
+        {x:window.innerWidth - 60,y:60,tx:window.innerWidth - 60,ty:60, angle:0, isWin:false}, 
+        {x:window.innerWidth - 60,y:140,tx:window.innerWidth - 60,ty:140, angle:0, isWin:false}, 
+        {x:window.innerWidth - 60,y:220,tx:window.innerWidth - 60,ty:220, angle:0, isWin:false}, 
+        {x:window.innerWidth - 60,y:300,tx:window.innerWidth - 60,ty:300, angle:0, isWin:false}
     ];
     let dragIdx = null, isGame = false, diceVal = "?", isRoll = false, won = false;
     let linkFrom = null, isLinkMode = false, particles = [], trailParticles = [], questionQueue = [], currentQuestionIdx = 0;
@@ -320,12 +285,10 @@
         document.getElementById('vic-title').style.fontFamily = state.font;
         if(state.music) { bgMusic.src = state.music; }
         
-        // Загружаем данные из state в инпуты, если они есть
-        if (!isGame) {
-            state.tokens.forEach((url, i) => document.getElementById('t' + (i+1)).value = url || '');
-            state.tokenSizes.forEach((sz, i) => document.getElementById('ts' + (i+1)).value = sz || 60);
-        }
-
+        // Перенос ползунков в инпуты
+        if(state.tokenW) document.getElementById('token-w').value = state.tokenW;
+        if(state.tokenH) document.getElementById('token-h').value = state.tokenH;
+        
         applyStateToAssets(); prepareQuestions();
         update(); animate();
     }
@@ -412,23 +375,12 @@
         if(newMusic !== state.music) { state.music = newMusic; bgMusic.src = newMusic; }
         state.ladderImg = document.getElementById('ladder-url').value;
         state.snakeImg = document.getElementById('snake-url').value;
-        
-        state.tokens = [
-            document.getElementById('t1').value, 
-            document.getElementById('t2').value, 
-            document.getElementById('t3').value, 
-            document.getElementById('t4').value
-        ];
-        state.tokenSizes = [
-            parseInt(document.getElementById('ts1').value),
-            parseInt(document.getElementById('ts2').value),
-            parseInt(document.getElementById('ts3').value),
-            parseInt(document.getElementById('ts4').value)
-        ];
-
+        state.tokens = [document.getElementById('t1').value, document.getElementById('t2').value, document.getElementById('t3').value, document.getElementById('t4').value];
         state.cellSize = parseInt(document.getElementById('cell-size').value);
         state.ladderTh = parseInt(document.getElementById('ladder-th').value);
         state.snakeTh = parseInt(document.getElementById('snake-th').value);
+        state.tokenW = parseInt(document.getElementById('token-w').value);
+        state.tokenH = parseInt(document.getElementById('token-h').value);
         state.neon = document.getElementById('neon-on').checked;
         state.cellShape = document.getElementById('cell-shape').value;
         state.font = document.getElementById('game-font').value;
@@ -436,7 +388,14 @@
         state.trailType = document.getElementById('trail-type').value;
         state.playerCount = parseInt(document.getElementById('p-count').value);
         state.colors = { dots: document.getElementById('c-dots').value, modalBg: document.getElementById('c-bg').value, modalTxt: document.getElementById('c-txt').value, btnBg: document.getElementById('c-btn').value, trail: document.getElementById('c-trail').value };
-        document.getElementById('sz-val').innerText = state.cellSize; document.getElementById('l-th-val').innerText = state.ladderTh; document.getElementById('s-th-val').innerText = state.snakeTh; document.getElementById('font-preview').style.fontFamily = state.font;
+        
+        document.getElementById('sz-val').innerText = state.cellSize; 
+        document.getElementById('l-th-val').innerText = state.ladderTh; 
+        document.getElementById('s-th-val').innerText = state.snakeTh;
+        document.getElementById('tw-val').innerText = state.tokenW;
+        document.getElementById('th-val').innerText = state.tokenH;
+        document.getElementById('font-preview').style.fontFamily = state.font;
+        
         const qs = document.getElementById('qs').value.split('\n'), ans = document.getElementById('ans').value.split('\n');
         state.tasks = qs.map((q, i) => ({ q: q.trim(), a: (ans[i] || '').trim() })).filter(t => t.q);
         applyStateToAssets();
@@ -473,13 +432,11 @@
 
     ctx.save();
 
-    // ✨ НЕОНОВОЕ СВЕЧЕНИЕ
     if (state.neon) {
         ctx.shadowBlur = hasToken ? 35 : 15;
         ctx.shadowColor = baseColor;
     }
 
-    // 1️⃣ Стеклянное тело
     ctx.fillStyle = "rgba(255,255,255,0.15)";
     ctx.beginPath();
     if (state.cellShape === 'circle')
@@ -490,25 +447,21 @@
         ctx.roundRect(px - s, py - s / 2, s * 2, s, 10);
     ctx.fill();
 
-    // 2️⃣ Внутреннее свечение
     const grad = ctx.createRadialGradient(px, py, s / 6, px, py, s / 1.4);
     grad.addColorStop(0, "rgba(255,255,255,0)");
     grad.addColorStop(1, baseColor.replace('rgb', 'rgba').replace(')', ',0.4)'));
     ctx.fillStyle = grad;
     ctx.fill();
 
-    // 3️⃣ Стеклянный контур
     ctx.strokeStyle = "rgba(255,255,255,0.6)";
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    // 4️⃣ Цветной обод
     ctx.strokeStyle = baseColor;
     ctx.lineWidth = 1;
     ctx.globalAlpha = 0.9;
     ctx.stroke();
 
-    // 5️⃣ Блик
     ctx.globalAlpha = 0.8;
     ctx.fillStyle = "white";
     ctx.beginPath();
@@ -520,7 +473,6 @@
 
     ctx.restore();
 
-    // 🔢 Номер клетки (только в редакторе)
     if (!isGame) {
         ctx.shadowBlur = 0;
         ctx.fillStyle = "white";
@@ -531,19 +483,21 @@
 });
         ctx.font = `bold 20px ${state.font}`; ctx.fillStyle = "gold"; ctx.shadowBlur = 0; ctx.textAlign = "left";
         ctx.fillText("START", state.startPos.x, state.startPos.y); ctx.fillText("FINISH", state.finishPos.x, state.finishPos.y);
+        
         for(let i=0; i < (isGame ? state.playerCount : 4); i++) {
-            // Берем индивидуальный размер из массива
-            let s = state.tokenSizes[i] || 60; 
-            if (isGame && i === currentPlayer && !won) s += Math.sin(pulseFrame)*8;
-            
+            let tw = state.tokenW;
+            let th = state.tokenH;
+            if (isGame && i === currentPlayer && !won) {
+                tw += Math.sin(pulseFrame)*8;
+                th += Math.sin(pulseFrame)*8;
+            }
             ctx.save(); ctx.translate(tPos[i].x, tPos[i].y); ctx.rotate(tPos[i].angle);
             if (state.tokens[i] && tImgs[i].complete) {
-                // Отрисовка с сохранением пропорций, чтобы не сплющивало
-                let imgW = tImgs[i].width, imgH = tImgs[i].height;
-                let ratio = Math.min(s / imgW, s / imgH);
-                ctx.drawImage(tImgs[i], -(imgW*ratio)/2, -(imgH*ratio)/2, imgW*ratio, imgH*ratio);
+                ctx.drawImage(tImgs[i], -tw/2, -th/2, tw, th);
             }
-            else { ctx.fillStyle = ['red','blue','green','yellow'][i]; ctx.beginPath(); ctx.arc(0, 0, s/3, 0, 7); ctx.fill(); }
+            else { 
+                ctx.fillStyle = ['red','blue','green','yellow'][i]; ctx.beginPath(); ctx.arc(0, 0, state.cellSize/3, 0, 7); ctx.fill(); 
+            }
             ctx.restore();
         }
         const dx = cvs.width-110, dy = cvs.height-110; ctx.save();
@@ -560,7 +514,7 @@
         if (audioCtx.state === 'suspended') audioCtx.resume();
         const x = e.clientX, y = e.clientY;
         if (x > cvs.width-110 && y > cvs.height-110) { roll(); return; }
-        for(let i=0; i<state.playerCount; i++) if (Math.hypot(x-tPos[i].x, y-tPos[i].y) < (state.tokenSizes[i] || 60)/2) { dragIdx = 't'+i; return; }
+        for(let i=0; i<state.playerCount; i++) if (Math.hypot(x-tPos[i].x, y-tPos[i].y) < state.tokenW/2) { dragIdx = 't'+i; return; }
         if (Math.hypot(x-state.startPos.x, y-state.startPos.y) < 50) { dragIdx = 'start'; return; }
         if (Math.hypot(x-state.finishPos.x, y-state.finishPos.y) < 50) { dragIdx = 'finish'; return; }
         for (let i=0; i<state.points.length; i++) {
