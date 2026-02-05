@@ -77,11 +77,14 @@ background-position: center;
         }
         #task-modal.show { transform: translate(-50%, -50%) scale(1); display: block;
         }
+        /* СТИЛЬ КРЕСТИКА */
         .close-modal {
             position: absolute; top: 15px; right: 15px; font-size: 24px;
-            cursor: pointer; font-weight: bold; line-height: 1; opacity: 0.7;
+            cursor: pointer; font-weight: bold; line-height: 1; 
+            color: #ff0000; opacity: 0.8; /* Ярко-красный цвет */
         }
-        .close-modal:hover { opacity: 1; }
+        .close-modal:hover { opacity: 1; text-shadow: 0 0 5px rgba(255,0,0,0.5); }
+
         #answer-input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; font-size: 16px;
 border: 1px solid #ccc; background: white; color: #333; }
         #check-btn { padding: 12px 20px;
@@ -402,10 +405,7 @@ const iv = setInterval(() => {
 
     function showTask() {
         if (!state.tasks || !state.tasks.length) return;
-        // Если очередь пуста, перемешиваем заново
         if (questionQueue.length === 0) prepareQuestions();
-        
-        // Берем первый доступный индекс из очереди
         const taskIdx = questionQueue[0];
         const m = document.getElementById('task-modal');
         m.style.backgroundColor = state.colors.modalBg;
@@ -428,7 +428,6 @@ const taskIdx = parseInt(m.getAttribute('data-ans-idx'));
         if (document.getElementById('answer-input').value.trim().toLowerCase() === state.tasks[taskIdx].a.toLowerCase()) { 
             m.classList.remove('show'); 
             playSfx(600, 'sine', 0.2); 
-            // Удаляем отвеченный вопрос из очереди, чтобы он не повторился
             questionQueue.shift();
         } else { 
             playSfx(100, 'sawtooth', 0.3);
